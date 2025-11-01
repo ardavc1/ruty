@@ -1,3 +1,3 @@
-# ruty
+# frontend
 
 A new Flutter project.

@@ -1,6 +1,6 @@
 {
-    "name": "ruty",
-    "short_name": "ruty",
+    "name": "frontend",
+    "short_name": "frontend",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
