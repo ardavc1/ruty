@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/habit_add_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum HabitFrequency {
@@ -47,7 +48,7 @@ class Habit {
       'description': description,
       'iconCodePoint': icon.codePoint,
       'iconFontFamily': icon.fontFamily,
-      'colorValue': color.toARGB32(),
+      'colorValue': color.toARGB32(), // mevcut projendeki yardımcıyı korudum
       'frequency': frequency.name,
       'completedCount': completedCount,
       'targetPerWeek': targetPerWeek,
@@ -84,24 +85,6 @@ class _HabitListScreenState extends State<HabitListScreen> {
   // Başlangıçta boş liste, sonradan storage'dan dolduracağız
   List<Habit> _habits = [];
 
-  // Seçilebilir ikon ve renk listeleri
-  final List<IconData> _iconOptions = const [
-    Icons.menu_book_rounded,
-    Icons.water_drop_rounded,
-    Icons.fitness_center_rounded,
-    Icons.self_improvement_rounded,
-    Icons.brush_rounded,
-    Icons.code_rounded,
-  ];
-
-  final List<Color> _colorOptions = const [
-    Colors.indigo,
-    Colors.blue,
-    Colors.green,
-    Colors.orange,
-    Colors.pink,
-    Colors.teal,
-  ];
 
   @override
   void initState() {
@@ -175,170 +158,8 @@ class _HabitListScreenState extends State<HabitListScreen> {
     _saveHabits();
   }
 
-  void _openAddHabitDialog() {
-    final nameController = TextEditingController();
-    final descController = TextEditingController();
-    HabitFrequency selectedFrequency = HabitFrequency.daily;
-    IconData selectedIcon = _iconOptions.first;
-    Color selectedColor = _colorOptions.first;
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setStateDialog) {
-            return AlertDialog(
-              title: const Text('Yeni alışkanlık'),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextField(
-                      controller: nameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Alışkanlık adı',
-                        hintText: 'Örn: Kitap okuma',
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: descController,
-                      decoration: const InputDecoration(
-                        labelText: 'Açıklama (opsiyonel)',
-                        hintText: 'Örn: Günde 20 dakika',
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Tip',
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        ChoiceChip(
-                          label: const Text('Günlük'),
-                          selected:
-                              selectedFrequency == HabitFrequency.daily,
-                          onSelected: (value) {
-                            if (value) {
-                              setStateDialog(() {
-                                selectedFrequency = HabitFrequency.daily;
-                              });
-                            }
-                          },
-                        ),
-                        const SizedBox(width: 8),
-                        ChoiceChip(
-                          label: const Text('Haftalık'),
-                          selected:
-                              selectedFrequency == HabitFrequency.weekly,
-                          onSelected: (value) {
-                            if (value) {
-                              setStateDialog(() {
-                                selectedFrequency = HabitFrequency.weekly;
-                              });
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'İkon',
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      children: _iconOptions.map((icon) {
-                        final isSelected = icon == selectedIcon;
-                        return ChoiceChip(
-                          label: Icon(icon),
-                          selected: isSelected,
-                          onSelected: (value) {
-                            if (value) {
-                              setStateDialog(() {
-                                selectedIcon = icon;
-                              });
-                            }
-                          },
-                        );
-                      }).toList(),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Renk',
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      children: _colorOptions.map((color) {
-                        final isSelected = color == selectedColor;
-                        return GestureDetector(
-                          onTap: () {
-                            setStateDialog(() {
-                              selectedColor = color;
-                            });
-                          },
-                          child: Container(
-                            width: 28,
-                            height: 28,
-                            decoration: BoxDecoration(
-                              color: color,
-                              shape: BoxShape.circle,
-                              border: isSelected
-                                  ? Border.all(
-                                      color: Colors.black,
-                                      width: 2,
-                                    )
-                                  : null,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('İptal'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    final name = nameController.text.trim();
-                    final desc = descController.text.trim();
-
-                    if (name.isEmpty) {
-                      // çok basic validation, istersen Snackbar gösterebilirsin
-                      return;
-                    }
-
-                    _addHabit(
-                      name,
-                      desc.isEmpty ? null : desc,
-                      selectedFrequency,
-                      selectedIcon,
-                      selectedColor,
-                    );
-
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Ekle'),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
+  // NOT: Artık dialog kullanılmıyor; elindeki ayrı sayfaya yönlendireceğiz.
+  // _openAddHabitDialog() fonksiyonunu kaldırdım.
 
   @override
   Widget build(BuildContext context) {
@@ -348,7 +169,17 @@ class _HabitListScreenState extends State<HabitListScreen> {
         centerTitle: true,
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: _openAddHabitDialog,
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => HabitAddPage(), 
+            ),
+          ).then((_) {
+            // Sayfadan dönünce listeyi yenile (ör. yeni kayıtlar geldiyse)
+            _loadHabits();
+          });
+        },
         icon: const Icon(Icons.add),
         label: const Text('Yeni alışkanlık'),
       ),
@@ -524,6 +355,21 @@ class _HabitListScreenState extends State<HabitListScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// ÖRNEK: Hedef sayfan için placeholder (kendi sayfanla değiştir)
+class AddHabitScreen extends StatelessWidget {
+  const AddHabitScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Yeni Alışkanlık Ekranı')),
+      body: const Center(
+        child: Text('Buraya elindeki form/ekran gelecek'),
       ),
     );
   }

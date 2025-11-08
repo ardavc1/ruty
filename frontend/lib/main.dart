@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/login_screen.dart';
 import 'register_screen.dart';
 import 'habit_list.dart';
 import 'pet_selection_screen.dart';
 import 'habit_add_page.dart';
+
+void main() {
+  runApp(const MainApp());
+}
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
@@ -20,9 +25,10 @@ class MainApp extends StatelessWidget {
           border: OutlineInputBorder(),
         ),
       ),
-      initialRoute: '/auth',
+      initialRoute: '/register',
       routes: {
-        '/auth': (_) => const RegisterScreen(),
+        '/register': (_) => const RegisterScreen(),
+        '/login': (_) => const LoginScreen(),
         '/animal': (_) => const PetSelectionScreen(),
         '/habit-add': (_) => const HabitAddPage(),
         '/habit-list': (_) => const HabitListScreen(),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:frontend/habit_list.dart';
 
 class HabitNewAddPage extends StatefulWidget { 
   const HabitNewAddPage({super.key});
@@ -197,6 +198,12 @@ class _HabitNewAddPageState extends State<HabitNewAddPage> {
                           ),
                         ),
                       );
+                      Future.delayed(const Duration(seconds: 1), () {
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HabitListScreen()), // ← hedef sayfa
+                        );
+                      });
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF499BCF),

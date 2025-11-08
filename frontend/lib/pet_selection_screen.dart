@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/habit_add_page.dart';
 
 class PetSelectionScreen extends StatefulWidget {
   const PetSelectionScreen({super.key});
@@ -40,7 +41,7 @@ class _PetSelectionScreenState extends State<PetSelectionScreen> {
     return Scaffold(
       backgroundColor: Colors.lightBlue[50],
       appBar: AppBar(
-        title: const Text('Buddy Seçimi'),
+        title: const Text('Ruty Seçimi'),
         centerTitle: true,
       ),
       body: Column(
@@ -134,7 +135,12 @@ class _PetSelectionScreenState extends State<PetSelectionScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
               ),
-              onPressed: _continue,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HabitAddPage()),
+                );
+              },
               child: const Text(
                 'Devam Et',
                 style: TextStyle(fontSize: 18, color: Colors.white),
