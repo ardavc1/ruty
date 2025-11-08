@@ -3,35 +3,30 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _passwordAgainController =
-      TextEditingController();
 
   bool _isLoading = false;
   String? _errorMessage;
 
   @override
   void dispose() {
-    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-    _passwordAgainController.dispose();
     super.dispose();
   }
 
-  Future<void> _register() async {
+  Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
@@ -40,13 +35,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     try {
-      // ANDROID emülatör için:
-      final url = Uri.parse('http://10.0.2.2:8080/auth/register');
-      // Eğer web/desktopta deneyeceksen:
-      // final url = Uri.parse('http://localhost:8080/auth/register');
+      // ANDROID emülatörde çalışıyorsan 10.0.2.2 = bilgisayarının localhost'u
+      final url = Uri.parse('http://10.0.2.2:8080/auth/login');
+      // Web/desktop için ileride localhost:8080 kullanabilirsin.
 
       final body = {
-        "display_name": _nameController.text.trim(),
         "email": _emailController.text.trim(),
         "password": _passwordController.text.trim(),
       };
@@ -57,16 +50,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
         body: jsonEncode(body),
       );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      if (response.statusCode == 200) {
+        // Başarılı giriş
+        // Burada istersen token vb. parse edebilirsin:
+        // final data = jsonDecode(response.body);
+
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Kayıt başarılı, giriş yapabilirsiniz.")),
+          const SnackBar(content: Text("Giriş başarılı!")),
         );
 
-        // İstersen direkt login ekranına at:
-        // Navigator.pushReplacementNamed(context, '/login');
+        // Şimdilik sadece Snackbar gösteriyoruz.
+        // İleride ana sayfaya yönlendirme ekleriz.
       } else {
-        String message = "Kayıt başarısız. Lütfen bilgilerinizi kontrol edin.";
+        String message =
+            "Giriş başarısız. E-posta veya şifreyi kontrol edin.";
 
         try {
           final data = jsonDecode(response.body);
@@ -113,16 +111,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return null;
   }
 
-  String? _validatePasswordAgain(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return "Şifre tekrar zorunludur.";
-    }
-    if (value.trim() != _passwordController.text.trim()) {
-      return "Şifreler eşleşmiyor.";
-    }
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -139,18 +127,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const Icon(Icons.pets, size: 64),
                 const SizedBox(height: 8),
                 Text(
-                  "Ruty’ye Katıl",
+                  "Ruty’ye Hoş Geldin",
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  "Alışkanlık yolculuğuna hemen başla",
+                  "Alışkanlık dostunla yeniden buluş",
                   style: theme.textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 24),
-
                 Card(
                   elevation: 2,
                   shape: RoundedRectangleBorder(
@@ -162,14 +149,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       key: _formKey,
                       child: Column(
                         children: [
-                          TextFormField(
-                            controller: _nameController,
-                            decoration: const InputDecoration(
-                              labelText: "İsim / Görünen ad",
-                              prefixIcon: Icon(Icons.person_outline),
-                            ),
-                          ),
-                          const SizedBox(height: 12),
                           TextFormField(
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
@@ -189,18 +168,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             validator: _validatePassword,
                           ),
-                          const SizedBox(height: 12),
-                          TextFormField(
-                            controller: _passwordAgainController,
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              labelText: "Şifre (tekrar)",
-                              prefixIcon: Icon(Icons.lock_outline),
-                            ),
-                            validator: _validatePasswordAgain,
-                          ),
                           const SizedBox(height: 16),
-
                           if (_errorMessage != null) ...[
                             Text(
                               _errorMessage!,
@@ -211,11 +179,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             const SizedBox(height: 8),
                           ],
-
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
-                              onPressed: _isLoading ? null : _register,
+                              onPressed: _isLoading ? null : _login,
                               style: ElevatedButton.styleFrom(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 14),
@@ -232,7 +199,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ),
                                     )
                                   : const Text(
-                                      "Kayıt Ol",
+                                      "Giriş Yap",
                                       style: TextStyle(fontSize: 16),
                                     ),
                             ),
@@ -242,19 +209,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 16),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Zaten hesabın var mı? "),
+                    const Text("Hesabın yok mu? "),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushReplacementNamed(context, '/login');
+                        Navigator.pushReplacementNamed(context, '/register');
                       },
                       child: Text(
-                        "Giriş yap",
+                        "Kayıt ol",
                         style: TextStyle(
                           color: theme.colorScheme.primary,
                           fontWeight: FontWeight.bold,
