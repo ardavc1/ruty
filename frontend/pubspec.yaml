@@ -17,3 +17,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/pets/dog.png
+    - assets/pets/cat.png
+    - assets/pets/rabbit.png
