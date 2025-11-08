@@ -10,12 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-<<<<<<< HEAD
-=======
   flutter_colorpicker: ^1.0.3
   intl: ^0.19.0
 
->>>>>>> f2d2e5d (habit ekleme ekranları)
 dev_dependencies:
   flutter_test:
     sdk: flutter

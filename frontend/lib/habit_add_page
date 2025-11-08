@@ -145,7 +145,7 @@ class HabitAddPage extends StatelessWidget {
               ),
             ),
 
-            // 🔹 Devam Et butonu
+            // 🔹 Devam Et buton
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
               child: SizedBox(

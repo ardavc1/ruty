@@ -66,7 +66,7 @@ class _HabitNewAddPageState extends State<HabitNewAddPage> {
                 ),
                 const SizedBox(height: 16),
 
-                // 🔹 Emoji + Tanım
+                // 🔹 Emoji ve Tanım
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: _cardDecoration(),
