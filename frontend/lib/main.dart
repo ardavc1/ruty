@@ -14,7 +14,7 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const primary = Color(0xFF499BCF); // #499bcf
+    const primary = Color(0xFF499BCF);
     return MaterialApp(
       title: 'Ruty',
       debugShowCheckedModeBanner: false,
