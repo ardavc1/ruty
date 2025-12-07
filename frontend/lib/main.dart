@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/login_screen.dart';
-import 'register_screen.dart';
-import 'habit_list.dart';
-import 'pet_selection_screen.dart';
-import 'habit_add_page.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'screens/splash_screen.dart';
+import 'screens/character_selection_screen.dart';
+import 'screens/home_screen.dart';
+import 'screens/auth/login_screen.dart';
+import 'screens/habit_add_screen.dart';
+import 'services/auth_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Türkçe locale data'yı initialize et
+  await initializeDateFormatting('tr_TR', null);
+  
   runApp(const MainApp());
 }
 
@@ -24,14 +31,20 @@ class MainApp extends StatelessWidget {
         inputDecorationTheme: const InputDecorationTheme(
           border: OutlineInputBorder(),
         ),
+        cardTheme: CardThemeData(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+        ),
       ),
-      initialRoute: '/register',
+      initialRoute: '/',
       routes: {
-        '/register': (_) => const RegisterScreen(),
-        '/login': (_) => const LoginScreen(),
-        '/animal': (_) => const PetSelectionScreen(),
-        '/habit-add': (_) => const HabitAddPage(),
-        '/habit-list': (_) => const HabitListScreen(),
+        '/': (context) => const SplashScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/character-selection': (context) => const CharacterSelectionScreen(),
+        '/home': (context) => const HomeScreen(),
+        '/habit-add': (context) => const HabitAddScreen(),
       },
     );
   }
