@@ -1,0 +1,74 @@
+### Backend API Test Dosyası
+### VS Code REST Client extension ile kullanılabilir
+
+@baseUrl = http://localhost:8080
+@token = your_jwt_token_here
+
+### Health Check
+GET {{baseUrl}}/health
+
+### Register New User
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "test123456",
+  "display_name": "Test User"
+}
+
+### Login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "test123456"
+}
+
+### Get All Habits (requires auth)
+GET {{baseUrl}}/habits
+Authorization: Bearer {{token}}
+
+### Create Habit (requires auth)
+POST {{baseUrl}}/habits
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Su içmek",
+  "description": "Günde 8 bardak su içmek",
+  "recurrence": "daily",
+  "difficulty": 1,
+  "color": "#4A90E2",
+  "reminder_time": "09:00"
+}
+
+### Check Habit (requires auth)
+POST {{baseUrl}}/habits/{{habitId}}/check
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "date": "2024-01-15",
+  "completed": true
+}
+
+### Get Character (requires auth)
+GET {{baseUrl}}/characters
+Authorization: Bearer {{token}}
+
+### Update Character (requires auth)
+PATCH {{baseUrl}}/characters
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "type": "dog",
+  "custom_name": "Max"
+}
+
+### Get Achievements (requires auth)
+GET {{baseUrl}}/achievements
+Authorization: Bearer {{token}}
+
